@@ -16,15 +16,12 @@ public enum LCDAdsViewType {
 }
 
 
-
 class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
 
     
     var _LCDAdsViewClosures: ((itemIdex: Int, isSelect:Bool) -> Void)?
-    
-    var _layout = UICollectionViewFlowLayout()
     var collectionView: UICollectionView!
-    
+    private var _layout = UICollectionViewFlowLayout()
     private var _adsType: LCDAdsViewType = .Default_H
     private var _imaCount:Int = 0
     private var _time = 0.0
