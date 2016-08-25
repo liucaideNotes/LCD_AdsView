@@ -12,49 +12,66 @@ import SDWebImage
 public enum LCDAdsViewType {
     case Default_H
     case Half_H
+    case ImageBrowse_H
+    case ImageBrowse_V
     
 }
 
 
 class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
 
-    
+    ///闭包传值
     var _LCDAdsViewClosures: ((itemIdex: Int, isSelect:Bool) -> Void)?
+    ///collectionView
     var collectionView: UICollectionView!
-    private var _layout = UICollectionViewFlowLayout()
-    private var _adsType: LCDAdsViewType = .Default_H
-    private var _imaCount:Int = 0
-    private var _time = 0.0
-    private var _frame = CGRectZero
-    private var _sendTime: NSTimer!
-    private var _itemSize:CGSize {
-        didSet{
-            collectionView.reloadData()
-        }
-    }
-    ///刷新数据
+    ///分页圆点
+    var scrollPageControl = UIPageControl()
+    ///图片数据
     var _imageUrls:[String] = [] {
         didSet{
             xzSetType()
             
             collectionView.reloadData()
             
+            if _imageUrls.count == 0 {
+                _imageView.hidden = false //显示底图
+            }else{
+                _imageView.hidden = true  //隐藏底图
+            }
         }
         
     }
     
-    
-    
-    
+    private var _layout = UICollectionViewFlowLayout()
+    private var _adsType: LCDAdsViewType = .Default_H
+    private var _imaCount:Int = 0
+    private var _time = 5.0
+    private var _frame = CGRectZero
+    private var _sendTime: NSTimer!
+    private var _imageView = UIImageView()
+    private var _itemSize:CGSize {
+        didSet{
+            collectionView.reloadData()
+        }
+    }
     private init(frame: CGRect,adsType:LCDAdsViewType, time: NSTimeInterval) {
         _itemSize = CGSizeMake(frame.size.width, frame.size.height)
         super.init(frame: frame)
         
         _adsType = adsType
         _time = time
+        
+        ///设置一张底图
+        _imageView = UIImageView(frame: frame)
+        self.addSubview(_imageView)
+        _imageView.image = UIImage(named: "placeholderImage")
+        
+        
         setCollectionView()
         
-        updateCollection()
+        if adsType == .Default_H || adsType == .Half_H {
+            updateCollection()
+        }
     }
     private func setCollectionView() {
         collectionView =  UICollectionView(frame:frame, collectionViewLayout: _layout)
@@ -73,6 +90,11 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         _imaCount = _imageUrls.count * 100
         itemIdex = _imaCount/2
         
+        if _adsType == .ImageBrowse_H || _adsType == .ImageBrowse_V {
+            _imaCount = _imageUrls.count
+            itemIdex = 0
+        }
+        
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
         // --- 分页圆点
         if _imageUrls.count > 1 {
@@ -84,9 +106,19 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         if _adsType == .Half_H && _imageUrls.count > 1 {
             half_Horizontal()
         }
+        if _adsType == .ImageBrowse_H  {
+            _layout.scrollDirection = .Horizontal
+            scrollPageControl.hidden = true
+        }
+        if _adsType == .ImageBrowse_V {
+            _layout.scrollDirection = .Vertical
+            scrollPageControl.hidden = true
+        }
+        if _imaCount > 0 {
+            let indexPath = NSIndexPath(forRow: itemIdex, inSection: 0) // 从中间开始
+            self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
+        }
         
-        let indexPath = NSIndexPath(forRow: itemIdex, inSection: 0) // 从中间开始
-        self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
     
     }
     
@@ -101,7 +133,6 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         scrollPageControl.hidden = true
     }
     //MARK:---------- 设置分页圆点
-    var  scrollPageControl = UIPageControl()
     private func setScrollPageControl() {
         scrollPageControl = UIPageControl.init(frame: CGRectMake(10, frame.size.height - 20, frame.size.width - 20, 20))
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
@@ -176,12 +207,16 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         if _adsType == .Half_H {
             cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
         }
-        
+        if _adsType == .ImageBrowse_H {
+            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
+        }
+        if _adsType == .ImageBrowse_V {
+            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
+        }
         cell.imageView.contentMode = UIViewContentMode.ScaleAspectFill
         return cell
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        
         
         _LCDAdsViewClosures?(itemIdex:indexPath.item % _imageUrls.count, isSelect:true)
     }
@@ -228,17 +263,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     //MARK:---------- UICollectionViewDelegateFlowLayout
     //布局确定每个Item 的大小
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        if _adsType == .Default_H {
-            //return CGSizeMake(frame.size.width, frame.size.height)
-            return _itemSize
-        }
-        if _adsType == .Half_H {
-            //return CGSizeMake((frame.size.width - 10)/2 , frame.size.height)
-            return _itemSize
-        }
         return _itemSize
-        //return CGSizeMake(frame.size.width, frame.size.height)
-        
     }
     //布局确定每个section内的Item距离section四周的间距 UIEdgeInsets
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
@@ -250,13 +275,30 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         if _adsType == .Half_H {
             return frame.size.width - (_itemSize.width * 2)
         }
-        
+        if _adsType == .ImageBrowse_V {//上下
+           return 3
+            //return (frame.size.height%_itemSize.height)/(frame.size.height/_itemSize.height)
+            
+        }
+        if _adsType == .ImageBrowse_H {//左右
+            return 3
+            //return (frame.size.width%_itemSize.width)/(frame.size.width/_itemSize.width)
+            
+        }
         return 0;
     }
     //返回每个section内左右两个Item之间的间距
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
         if _adsType == .Half_H {
             return 0
+        }
+        if _adsType == .ImageBrowse_V{//左右
+            //return (frame.size.width%_itemSize.width)/(frame.size.width/_itemSize.width)
+            return 3
+        }
+        if _adsType == .ImageBrowse_H {//上下
+            //return (frame.size.height%_itemSize.height)/(frame.size.height/_itemSize.height)
+            return 3
         }
         
         return 0;
