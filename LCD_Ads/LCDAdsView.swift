@@ -68,7 +68,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         
         
         setCollectionView()
-        
+        setScrollPageControl()
         if adsType == .Default_H || adsType == .Half_H {
             updateCollection()
         }
@@ -86,6 +86,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         collectionView.registerNib(UINib(nibName: "LCDAdsColleCell", bundle: nil), forCellWithReuseIdentifier: "LCDAdsColleCell")
         
     }
+    //MARK:----------- 更新数据
     private func xzSetType() {
         _imaCount = _imageUrls.count * 100
         itemIdex = _imaCount/2
@@ -98,13 +99,19 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
         // --- 分页圆点
         if _imageUrls.count > 1 {
-            setScrollPageControl()
+            scrollPageControl.hidden = false
+        }else{
+            scrollPageControl.hidden = true
         }
+        
         if _adsType == .Default_H && _imageUrls.count > 1 {
-            default_Horizontal()
+            collectionView.pagingEnabled = true //分页显示
+            collectionView.bounces = false     // 关闭弹簧
+            _layout.scrollDirection = .Horizontal
         }
         if _adsType == .Half_H && _imageUrls.count > 1 {
-            half_Horizontal()
+            _layout.scrollDirection = .Horizontal
+            scrollPageControl.hidden = true
         }
         if _adsType == .ImageBrowse_H  {
             _layout.scrollDirection = .Horizontal
@@ -122,20 +129,11 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     
     }
     
-    private func default_Horizontal()  {
-        collectionView.pagingEnabled = true //分页显示
-        collectionView.bounces = false     // 关闭弹簧
-        _layout.scrollDirection = .Horizontal
-        
-    }
-    private func half_Horizontal()  {
-        _layout.scrollDirection = .Horizontal
-        scrollPageControl.hidden = true
-    }
+    
+    
     //MARK:---------- 设置分页圆点
     private func setScrollPageControl() {
         scrollPageControl = UIPageControl.init(frame: CGRectMake(10, frame.size.height - 20, frame.size.width - 20, 20))
-        scrollPageControl.numberOfPages = _imageUrls.count // 页数
         //圆点颜色
         scrollPageControl.pageIndicatorTintColor = UIColor.xzTintColor2()
         scrollPageControl.currentPageIndicatorTintColor = UIColor.xzTintColor1()
