@@ -1,5 +1,6 @@
 # LCD_AdsView
 广告轮播View，基于CollectionView
+![image description](adsView.gif)
 
             let cell = TableViewCell_Title.dequeueReusable(tableView, indexPath:indexPath)
             let adsView = LCDAdsView.show(cell.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section))
