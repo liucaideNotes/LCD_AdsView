@@ -1,5 +1,6 @@
 # LCD_AdsView
 广告轮播View，基于CollectionView
+
 ![image description](adsView.gif)
 
             let cell = TableViewCell_Title.dequeueReusable(tableView, indexPath:indexPath)
