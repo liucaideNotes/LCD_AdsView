@@ -1,7 +1,7 @@
 # LCD_AdsView
 广告轮播View，基于CollectionView
 
-![image description](adsView1.gif)
+![image description](ads.gif)
 
 
     /*
