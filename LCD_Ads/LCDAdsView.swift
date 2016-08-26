@@ -65,6 +65,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         ///设置一张底图
         _imageView = UIImageView(frame: frame)
         self.addSubview(_imageView)
+        _imageView.backgroundColor = UIColor.xzTintColor2()
         _imageView.image = UIImage(named: "placeholderImage")
         
         
@@ -281,14 +282,27 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             return frame.size.width - (_itemSize.width * 2)
         }
         if _adsType == .ImageBrowse_V {//上下
-           return 3
-            //return (frame.size.height%_itemSize.height)/(frame.size.height/_itemSize.height)
+            //可视范围内的上下item个数
+            let num_item = Int(frame.size.height/_itemSize.height)
+            //可视范围内的间距个数
+            let num_spacing = Int(frame.size.height/_itemSize.height) > 1 ?  Int(frame.size.height/_itemSize.height) - 1 : Int(frame.size.height/_itemSize.height)
+            //可视范围内间距总高度
+            let H = frame.size.height - _itemSize.height * CGFloat(num_item)
+            //可视范围内间距高度
+            let HH = H/CGFloat(num_spacing)
+           return HH
             
         }
         if _adsType == .ImageBrowse_H {//左右
-            return 3
-            //return (frame.size.width%_itemSize.width)/(frame.size.width/_itemSize.width)
-            
+            //可视范围内的上下item个数
+            let num_item = Int(frame.size.width/_itemSize.width)
+            //可视范围内的间距个数
+            let num_spacing = Int(frame.size.width/_itemSize.width) > 1 ?  Int(frame.size.width/_itemSize.width) - 1 : Int(frame.size.width/_itemSize.width)
+            //可视范围内间距总高度
+            let W = frame.size.width - _itemSize.width * CGFloat(num_item)
+            //可视范围内间距高度
+            let WW = W/CGFloat(num_spacing)
+            return WW
         }
         return 0;
     }
@@ -298,12 +312,26 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             return 0
         }
         if _adsType == .ImageBrowse_V{//左右
-            //return (frame.size.width%_itemSize.width)/(frame.size.width/_itemSize.width)
-            return 3
+            //可视范围内的上下item个数
+            let num_item = Int(frame.size.width/_itemSize.width)
+            //可视范围内的间距个数
+            let num_spacing = Int(frame.size.width/_itemSize.width) > 1 ?  Int(frame.size.width/_itemSize.width) - 1 : Int(frame.size.width/_itemSize.width)
+            //可视范围内间距总高度
+            let W = frame.size.width - _itemSize.width * CGFloat(num_item)
+            //可视范围内间距高度
+            let WW = W/CGFloat(num_spacing)
+            return WW
         }
         if _adsType == .ImageBrowse_H {//上下
-            //return (frame.size.height%_itemSize.height)/(frame.size.height/_itemSize.height)
-            return 3
+            //可视范围内的上下item个数
+            let num_item = Int(frame.size.height/_itemSize.height)
+            //可视范围内的间距个数
+            let num_spacing = Int(frame.size.height/_itemSize.height) > 1 ?  Int(frame.size.height/_itemSize.height) - 1 : Int(frame.size.height/_itemSize.height)
+            //可视范围内间距总高度
+            let H = frame.size.height - _itemSize.height * CGFloat(num_item)
+            //可视范围内间距高度
+            let HH = H/CGFloat(num_spacing)
+            return HH
         }
         
         return 0;
@@ -340,6 +368,14 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
 }
 
 extension LCDAdsView {
+    /*
+     * view 父view
+     * adsType 轮播图样式
+     * imageUrls 图片数组
+     * isUrlImage 是否为网络图片，默认为网络图片，
+     * time 时间间隔
+     * itemSize cell 大小
+     */
     class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0)) -> LCDAdsView {
         for subView in view.subviews {
             if let adsView = subView as? LCDAdsView {
@@ -349,6 +385,10 @@ extension LCDAdsView {
                     adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
                 default:
                     adsView._itemSize = itemSize
+                    if itemSize == CGSizeMake(0, 0) {
+                        adsView._itemSize = CGSizeMake(frame.size.width/2, frame.size.height/2)
+                    }
+                    
                 }
                 adsView._isUrlImage = isUrlImage
                 adsView._imageUrls = imageUrls
@@ -362,6 +402,9 @@ extension LCDAdsView {
             adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
         default:
             adsView._itemSize = itemSize
+            if itemSize == CGSizeMake(0, 0) {
+                adsView._itemSize = CGSizeMake(frame.size.width/2, frame.size.height/2)
+            }
         }
         adsView._isUrlImage = isUrlImage
         adsView._imageUrls = imageUrls

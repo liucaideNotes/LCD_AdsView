@@ -13,11 +13,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var tableView: UITableView!
     
     var images1 = ["http://p1.ifengimg.com/a/2016_35/bf489286fc9050d_size52_w900_h502.jpg",
+                   "placeholderImage",
                    "http://p0.ifengimg.com/a/2016_35/becb7b6d997a1d0_size53_w750_h500.jpg",
                    "http://p1.ifengimg.com/a/2016_35/dc2acc684d61c74_size57_w978_h550.jpg",
                    "http://p2.ifengimg.com/a/2016_35/f966a4d9e469952_size57_w978_h550.jpg",
                    "http://p0.ifengimg.com/a/2016_35/071b8b8c35a9a9e_size39_w750_h500.jpg",
-                   "placeholderImage",
                    "http://p1.ifengimg.com/a/2016_35/0eac1e14cbb655e_size49_w750_h480.jpg",
                    "http://photocdn.sohu.com/20160824/Img465700296.jpg",
                    "http://photocdn.sohu.com/20160825/Img465897773.jpg",
@@ -34,7 +34,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
+        //self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
     }
     
     func upArrayClick() {
@@ -153,7 +153,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: images1, isUrlImage: false,itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: images1)
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
