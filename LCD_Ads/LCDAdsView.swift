@@ -31,7 +31,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         didSet{
             xzSetType()
             
-            collectionView.reloadData()
+            
             
             if _imageUrls.count == 0 {
                 _imageView.hidden = false //显示底图
@@ -121,9 +121,14 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             _layout.scrollDirection = .Vertical
             scrollPageControl.hidden = true
         }
+        
+        collectionView.reloadData()
+        
         if _imaCount > 0 {
             let indexPath = NSIndexPath(forRow: itemIdex, inSection: 0) // 从中间开始
             self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
+            
+            changePageValue()
         }
         
     
