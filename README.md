@@ -1,13 +1,14 @@
 # LCD_AdsView
 广告轮播View，基于CollectionView
 
-![image description](adsView.gif)
+![image description](adsView1.gif)
 
 
     /*
      * view 父view
      * adsType 轮播图样式
      * imageUrls 图片数组
+     * time 时间间隔 默认为5.0
      * isUrlImage 是否为网络图片，默认为网络图片，
      * itemSize cell 大小
      */
