@@ -16,8 +16,6 @@ public enum LCDAdsViewType {
     case ImageBrowse_V
     
 }
-
-
 class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
 
     ///闭包传值
@@ -49,11 +47,14 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     private var _frame = CGRectZero
     private var _sendTime: NSTimer!
     private var _imageView = UIImageView()
+    private var  itemIdex: Int = 0
+    private var _isUrlImage = true //是否为网络图片
     private var _itemSize:CGSize {
         didSet{
             collectionView.reloadData()
         }
     }
+    
     private init(frame: CGRect,adsType:LCDAdsViewType, time: NSTimeInterval) {
         _itemSize = CGSizeMake(frame.size.width, frame.size.height)
         super.init(frame: frame)
@@ -89,13 +90,19 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     //MARK:----------- 更新数据
     private func xzSetType() {
         _imaCount = _imageUrls.count * 100
-        itemIdex = _imaCount/2
-        
+        //已滚动后刷新数据不回到原点
+        if itemIdex > _imaCount {
+            itemIdex = _imaCount/2
+        }
+        //时间
+        if _imageUrls.count < 2 && _sendTime != nil {
+            _sendTime.invalidate()
+            _sendTime = nil
+        }
         if _adsType == .ImageBrowse_H || _adsType == .ImageBrowse_V {
             _imaCount = _imageUrls.count
             itemIdex = 0
         }
-        
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
         // --- 分页圆点
         if _imageUrls.count > 1 {
@@ -124,7 +131,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         
         collectionView.reloadData()
         
-        if _imaCount > 0 {
+        if _imaCount > 0 && itemIdex < _imaCount {
             let indexPath = NSIndexPath(forRow: itemIdex, inSection: 0) // 从中间开始
             self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
             
@@ -152,11 +159,10 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     }
     
     //MARK:---------- 轮循 更新 item
-    private var  itemIdex: Int = 0
     func updateCollection()  {
         if _time > 0 {
             _sendTime = NSTimer.LCD_scheduledTimerWithTimeInterval(self._time, closure: {
-                //print("--->\(self._sendTime)")
+                
                 //滚动到某一个 item
                 if self._adsType == .Default_H {
                     let indexPath = NSIndexPath(forRow: self.itemIdex, inSection: 0)
@@ -198,23 +204,18 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     
     //MARK:---------- UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(_imaCount)
+        
         return _imaCount
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("LCDAdsColleCell", forIndexPath: indexPath) as! LCDAdsColleCell
-        if _adsType == .Default_H {
-            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
-        }
-        if _adsType == .Half_H {
-            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
-        }
-        if _adsType == .ImageBrowse_H {
-            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
-        }
-        if _adsType == .ImageBrowse_V {
-            cell.imageView.sd_setImageWithURL(NSURL(string: _imageUrls[indexPath.item % _imageUrls.count]), placeholderImage: UIImage(named: "placeholderImage"))
+        
+        switch _adsType {
+        case .Default_H,.Half_H:
+            cell.model(_imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
+        default:
+            cell.model(_imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
         }
         cell.imageView.contentMode = UIViewContentMode.ScaleAspectFill
         return cell
@@ -225,14 +226,15 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     }
     //开始拖曳
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        if _adsType == .Default_H || _adsType == .Half_H {
+        if (_adsType == .Default_H || _adsType == .Half_H) && _sendTime != nil {
             _sendTime.invalidate()
+            _sendTime = nil
         }
         
     }
     //结束拖曳
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if (_adsType == .Default_H || _adsType == .Half_H) && _imageUrls.count > 1 {
+        if (_adsType == .Default_H || _adsType == .Half_H) && _imageUrls.count > 1 && _sendTime == nil {
             self.updateCollection()
         }
         
@@ -338,31 +340,31 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
 }
 
 extension LCDAdsView {
-    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0)) -> LCDAdsView {
+    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0)) -> LCDAdsView {
         for subView in view.subviews {
             if let adsView = subView as? LCDAdsView {
                 adsView.frame = frame
-                adsView._imageUrls = imageUrls
                 switch adsType {
                 case .Default_H:
                     adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
                 default:
                     adsView._itemSize = itemSize
                 }
-                
+                adsView._isUrlImage = isUrlImage
+                adsView._imageUrls = imageUrls
                 return adsView
             }
         }
         let adsView = LCDAdsView(frame: frame, adsType:adsType, time: time)
         view.addSubview(adsView)
-        
-        adsView._imageUrls = imageUrls
         switch adsType {
         case .Default_H:
             adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
         default:
             adsView._itemSize = itemSize
         }
+        adsView._isUrlImage = isUrlImage
+        adsView._imageUrls = imageUrls
         return adsView
     }
 }

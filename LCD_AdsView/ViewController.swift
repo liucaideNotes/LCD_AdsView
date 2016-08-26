@@ -12,12 +12,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
     @IBOutlet weak var tableView: UITableView!
     
-    let images1 = ["http://p1.ifengimg.com/a/2016_35/bf489286fc9050d_size52_w900_h502.jpg",
+    var images1 = ["http://p1.ifengimg.com/a/2016_35/bf489286fc9050d_size52_w900_h502.jpg",
                    "http://p0.ifengimg.com/a/2016_35/becb7b6d997a1d0_size53_w750_h500.jpg",
                    "http://p1.ifengimg.com/a/2016_35/dc2acc684d61c74_size57_w978_h550.jpg",
                    "http://p2.ifengimg.com/a/2016_35/f966a4d9e469952_size57_w978_h550.jpg",
                    "http://p0.ifengimg.com/a/2016_35/071b8b8c35a9a9e_size39_w750_h500.jpg",
-                   "",
+                   "placeholderImage",
                    "http://p1.ifengimg.com/a/2016_35/0eac1e14cbb655e_size49_w750_h480.jpg",
                    "http://photocdn.sohu.com/20160824/Img465700296.jpg",
                    "http://photocdn.sohu.com/20160825/Img465897773.jpg",
@@ -34,9 +34,23 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 3.5)
     }
     
+    func upArrayClick() {
+        images1.removeLast()
+        tableView.reloadData()
+        if images1.count > 0 {
+            self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 3.5)
+        }
+        
+    }
+    
+    
+    
+    
     let cell_H:CGFloat = 150.0
+    var _itemIdex = 0
     
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -80,7 +94,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         case 1:
             let cell = TableViewCell_Title.dequeueReusable(tableView, indexPath:indexPath)
             let adsView = LCDAdsView.show(cell.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section))
-            cell.titleLab.text = "title_\(0)"
+            cell.titleLab.text = "title_\(_itemIdex)"
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
@@ -90,7 +104,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     self.presentViewController(aler, animated: true, completion: nil)
                 }else{
                     //可以在这里对自定义分页圆点或其他空间赋值
-                    
+                    self._itemIdex = itemIdex
                     cell.titleLab.text = "title_\(itemIdex)"
                 }
             }
@@ -103,7 +117,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Half_H, imageUrls: images1,time: Double(indexPath.section),itemSize:CGSizeMake(UIScreen.mainScreen().bounds.size.width/2 - 2, cell_H))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Half_H, imageUrls: images1,itemSize:CGSizeMake(UIScreen.mainScreen().bounds.size.width/2 - 2, cell_H))
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
@@ -121,7 +135,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_H, imageUrls: images1,time: Double(indexPath.section),itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_H, imageUrls: images1,itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
@@ -139,7 +153,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: images1,time: Double(indexPath.section),itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: images1, isUrlImage: false,itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
@@ -157,7 +171,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: [],time: Double(indexPath.section),itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .ImageBrowse_V, imageUrls: [],itemSize:CGSizeMake((cell_H-5)/2, (cell_H-5)/2))
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
@@ -175,7 +189,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section))
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1)
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)

@@ -11,6 +11,17 @@ import UIKit
 class LCDAdsColleCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
+    
+    func model(name:String, isUrlImage:Bool) {
+        if isUrlImage {
+            imageView.sd_setImageWithURL(NSURL(string: name), placeholderImage: UIImage(named: "placeholderImage"))
+        }else{
+            imageView.image = UIImage(named: name)
+        }
+        
+        
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
