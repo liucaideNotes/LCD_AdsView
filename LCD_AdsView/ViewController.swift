@@ -34,14 +34,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 3.5)
+        self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
     }
     
     func upArrayClick() {
         images1.removeLast()
         tableView.reloadData()
         if images1.count > 0 {
-            self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 3.5)
+            self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
         }
         
     }
@@ -108,7 +108,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     cell.titleLab.text = "title_\(itemIdex)"
                 }
             }
-            cell.contentView.sendSubviewToBack(adsView)
+            cell.contentView.sendSubviewToBack(adsView)//将轮播放在底层
             return cell
         case 2:
             let cellID_null = "Cell_0\(indexPath.section)"
