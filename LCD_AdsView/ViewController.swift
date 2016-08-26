@@ -34,7 +34,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
+        self.performSelector(#selector(ViewController.upArrayClick), withObject: nil, afterDelay: 4.3)
     }
     
     func upArrayClick() {
