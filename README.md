@@ -13,7 +13,7 @@
      * itemSize cell 大小
      */
             let cell = TableViewCell_Title.dequeueReusable(tableView, indexPath:indexPath)
-            let adsView = LCDAdsView.show(cell.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section))
+            let adsView = LCDAdsView.show(cell.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section), pageAlignment: .Right)
             cell.titleLab.text = "title_\(_itemIdex)"
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
