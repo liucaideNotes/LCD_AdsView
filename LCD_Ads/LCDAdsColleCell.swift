@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SDWebImage
 class LCDAdsColleCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!

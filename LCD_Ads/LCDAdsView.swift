@@ -108,7 +108,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             itemIdex = 0
         }
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
-        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count)
+        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count, sizeW:self.frame.size.width)
         
         // --- 分页圆点
         if _imageUrls.count > 1 {
@@ -152,7 +152,6 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     //MARK:---------- 设置分页圆点
     private func setScrollPageControl() {
         scrollPageControl = UIPageControl(frame: CGRectMake(0, frame.size.height - 20, frame.size.width, 20))
-        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count)
         //圆点颜色
         
         scrollPageControl.pageIndicatorTintColor = UIColor.xzTintColor2()
