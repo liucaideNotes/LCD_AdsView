@@ -102,6 +102,8 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         if _imageUrls.count < 2 && _sendTime != nil {
             _sendTime.invalidate()
             _sendTime = nil
+        }else if _imageUrls.count >= 2 && _sendTime == nil {
+            self.updateCollection()
         }
         if _adsType == .ImageBrowse_H || _adsType == .ImageBrowse_V {
             _imaCount = _imageUrls.count
