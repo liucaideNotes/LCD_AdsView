@@ -11,6 +11,7 @@
      * time 时间间隔 默认为5.0
      * isUrlImage 是否为网络图片，默认为网络图片，
      * itemSize cell 大小
+     * pageAlignment 分页圆点位置
      */
             let cell = TableViewCell_Title.dequeueReusable(tableView, indexPath:indexPath)
             let adsView = LCDAdsView.show(cell.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section), pageAlignment: .Right)
