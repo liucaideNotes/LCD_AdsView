@@ -80,7 +80,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1)
+            let adsView = LCDAdsView.show(cell!.contentView, frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, cell_H), adsType: .Default_H, imageUrls: images1, pageAlignment:.Right)
             adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: UIAlertControllerStyle.Alert)

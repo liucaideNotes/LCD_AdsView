@@ -38,3 +38,28 @@ extension UIColor {
         return UIColor(red: 179/255, green: 179/255, blue: 179/255, alpha: 0.6)
     }
 }
+//MARK:---------- UIPageControl
+extension UIPageControl {
+    enum PageControlAlignmentType {
+        case Left
+        case Right
+        case Center
+    }
+    //设置分页圆点的位置
+    func alignment(type:PageControlAlignmentType, pageCount:Int){
+        //小圆点个数
+        
+        let page_w: CGFloat = self.sizeForNumberOfPages(pageCount).width + 20
+        switch type {
+        case .Left:
+            self.frame.size.width = page_w
+        case .Right:
+            print(self.frame.size.width)
+            let page_x:CGFloat = UIScreen.mainScreen().bounds.size.width - page_w
+            self.frame.origin.x = page_x
+            self.frame.size.width = page_w
+        case .Center:break
+        }
+    }
+}
+

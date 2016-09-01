@@ -7,23 +7,26 @@
 //
 
 import UIKit
-import SDWebImage
 
-public enum LCDAdsViewType {
+
+enum LCDAdsViewType {
     case Default_H
     case Half_H
     case ImageBrowse_H
     case ImageBrowse_V
     
 }
-class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
 
+class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
+    
     ///闭包传值
     var _LCDAdsViewClosures: ((itemIdex: Int, isSelect:Bool) -> Void)?
     ///collectionView
     var collectionView: UICollectionView!
+    
     ///分页圆点
-    var scrollPageControl = UIPageControl()
+    private var scrollPageControl = UIPageControl()
+    private var pageControlAlignment:UIPageControl.PageControlAlignmentType = .Center
     ///图片数据
     var _imageUrls:[String] = [] {
         didSet{
@@ -105,6 +108,8 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             itemIdex = 0
         }
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
+        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count)
+        
         // --- 分页圆点
         if _imageUrls.count > 1 {
             scrollPageControl.hidden = false
@@ -139,15 +144,17 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             changePageValue()
         }
         
-    
+        
     }
     
     
     
     //MARK:---------- 设置分页圆点
     private func setScrollPageControl() {
-        scrollPageControl = UIPageControl.init(frame: CGRectMake(10, frame.size.height - 20, frame.size.width - 20, 20))
+        scrollPageControl = UIPageControl(frame: CGRectMake(0, frame.size.height - 20, frame.size.width, 20))
+        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count)
         //圆点颜色
+        
         scrollPageControl.pageIndicatorTintColor = UIColor.xzTintColor2()
         scrollPageControl.currentPageIndicatorTintColor = UIColor.xzTintColor1()
         scrollPageControl.enabled = false
@@ -290,7 +297,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             let H = frame.size.height - _itemSize.height * CGFloat(num_item)
             //可视范围内间距高度
             let HH = H/CGFloat(num_spacing)
-           return HH
+            return HH
             
         }
         if _adsType == .ImageBrowse_H {//左右
@@ -358,13 +365,13 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     }
     
     /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
-    }
-    */
-
+     // Only override drawRect: if you perform custom drawing.
+     // An empty implementation adversely affects performance during animation.
+     override func drawRect(rect: CGRect) {
+     // Drawing code
+     }
+     */
+    
 }
 
 extension LCDAdsView {
@@ -376,7 +383,7 @@ extension LCDAdsView {
      * time 时间间隔
      * itemSize cell 大小
      */
-    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0)) -> LCDAdsView {
+    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0), pageAlignment:UIPageControl.PageControlAlignmentType = .Center) -> LCDAdsView {
         for subView in view.subviews {
             if let adsView = subView as? LCDAdsView {
                 adsView.frame = frame
@@ -390,6 +397,7 @@ extension LCDAdsView {
                     }
                     
                 }
+                adsView.pageControlAlignment = pageAlignment
                 adsView._isUrlImage = isUrlImage
                 adsView._imageUrls = imageUrls
                 return adsView
@@ -406,6 +414,7 @@ extension LCDAdsView {
                 adsView._itemSize = CGSizeMake(frame.size.width/2, frame.size.height/2)
             }
         }
+        adsView.pageControlAlignment = pageAlignment
         adsView._isUrlImage = isUrlImage
         adsView._imageUrls = imageUrls
         return adsView
