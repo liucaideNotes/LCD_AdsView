@@ -20,13 +20,13 @@ enum LCDAdsViewType {
 class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
     ///闭包传值
-    var _LCDAdsViewClosures: ((itemIdex: Int, isSelect:Bool) -> Void)?
+    var _LCDAdsViewClosures: ((_ itemIdex: Int, _ isSelect:Bool) -> Void)?
     ///collectionView
     var collectionView: UICollectionView!
     
     ///分页圆点
     private var scrollPageControl = UIPageControl()
-    private var pageControlAlignment:UIPageControl.PageControlAlignmentType = .Center
+    var pageControlAlignment:UIPageControl.PageControlAlignmentType = .Center
     ///图片数据
     var _imageUrls:[String] = [] {
         didSet{
@@ -35,9 +35,9 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             
             
             if _imageUrls.count == 0 {
-                _imageView.hidden = false //显示底图
+                _imageView.isHidden = false //显示底图
             }else{
-                _imageView.hidden = true  //隐藏底图
+                _imageView.isHidden = true  //隐藏底图
             }
         }
         
@@ -47,19 +47,20 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     private var _adsType: LCDAdsViewType = .Default_H
     private var _imaCount:Int = 0
     private var _time = 5.0
-    private var _frame = CGRectZero
-    private var _sendTime: NSTimer!
+    private var _frame = CGRect.zero
+    private var _sendTime: Timer!
     private var _imageView = UIImageView()
     private var  itemIdex: Int = 0
-    private var _isUrlImage = true //是否为网络图片
-    private var _itemSize:CGSize {
+    var _isUrlImage = true //是否为网络图片
+    var _itemSize:CGSize {
         didSet{
             collectionView.reloadData()
         }
     }
     
-    private init(frame: CGRect,adsType:LCDAdsViewType, time: NSTimeInterval) {
-        _itemSize = CGSizeMake(frame.size.width, frame.size.height)
+    init(frame: CGRect,adsType:LCDAdsViewType, time: TimeInterval) {
+        _itemSize = CGSize(width: frame.size.width, height: frame.size.height)
+        
         super.init(frame: frame)
         
         _adsType = adsType
@@ -80,7 +81,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     }
     private func setCollectionView() {
         collectionView =  UICollectionView(frame:frame, collectionViewLayout: _layout)
-        collectionView.backgroundColor = UIColor.clearColor()
+        collectionView.backgroundColor = UIColor.clear
         
         collectionView.dataSource  = self
         collectionView.delegate = self
@@ -88,7 +89,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         collectionView.showsVerticalScrollIndicator   = false  //隐藏滑动条
         collectionView.showsHorizontalScrollIndicator = false
         
-        collectionView.registerNib(UINib(nibName: "LCDAdsColleCell", bundle: nil), forCellWithReuseIdentifier: "LCDAdsColleCell")
+        collectionView.register(UINib(nibName: "LCDAdsColleCell", bundle: nil), forCellWithReuseIdentifier: "LCDAdsColleCell")
         
     }
     //MARK:----------- 更新数据
@@ -110,38 +111,38 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
             itemIdex = 0
         }
         scrollPageControl.numberOfPages = _imageUrls.count // 页数
-        scrollPageControl.alignment(pageControlAlignment, pageCount:_imageUrls.count, sizeW:self.frame.size.width)
+        scrollPageControl.alignment(type: pageControlAlignment, pageCount:_imageUrls.count, sizeW:self.frame.size.width)
         
         // --- 分页圆点
         if _imageUrls.count > 1 {
-            scrollPageControl.hidden = false
+            scrollPageControl.isHidden = false
         }else{
-            scrollPageControl.hidden = true
+            scrollPageControl.isHidden = true
         }
         
         if _adsType == .Default_H && _imageUrls.count > 1 {
-            collectionView.pagingEnabled = true //分页显示
+            collectionView.isPagingEnabled = true //分页显示
             collectionView.bounces = false     // 关闭弹簧
-            _layout.scrollDirection = .Horizontal
+            _layout.scrollDirection = .horizontal
         }
         if _adsType == .Half_H && _imageUrls.count > 1 {
-            _layout.scrollDirection = .Horizontal
-            scrollPageControl.hidden = true
+            _layout.scrollDirection = .horizontal
+            scrollPageControl.isHidden = true
         }
         if _adsType == .ImageBrowse_H  {
-            _layout.scrollDirection = .Horizontal
-            scrollPageControl.hidden = true
+            _layout.scrollDirection = .horizontal
+            scrollPageControl.isHidden = true
         }
         if _adsType == .ImageBrowse_V {
-            _layout.scrollDirection = .Vertical
-            scrollPageControl.hidden = true
+            _layout.scrollDirection = .vertical
+            scrollPageControl.isHidden = true
         }
         
         collectionView.reloadData()
         
         if _imaCount > 0 && itemIdex < _imaCount {
-            let indexPath = NSIndexPath(forRow: itemIdex, inSection: 0) // 从中间开始
-            self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Left, animated: false)
+            let indexPath = IndexPath(row: itemIdex, section: 0) // 从中间开始
+            self.collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
             
             changePageValue()
         }
@@ -153,88 +154,84 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     
     //MARK:---------- 设置分页圆点
     private func setScrollPageControl() {
-        scrollPageControl = UIPageControl(frame: CGRectMake(0, frame.size.height - 20, frame.size.width, 20))
+        scrollPageControl = UIPageControl(frame: CGRect(x: 0, y: frame.size.height - 20, width: frame.size.width, height: 20))
         //圆点颜色
         
         scrollPageControl.pageIndicatorTintColor = UIColor.xzTintColor2()
         scrollPageControl.currentPageIndicatorTintColor = UIColor.xzTintColor1()
-        scrollPageControl.enabled = false
+        scrollPageControl.isEnabled = false
         self.addSubview(scrollPageControl)
     }
     //MARK:---------- 改变分页圆点
     private func changePageValue() {
         scrollPageControl.currentPage = itemIdex % _imageUrls.count
-        self._LCDAdsViewClosures?(itemIdex:itemIdex % self._imageUrls.count, isSelect:false)
+        self._LCDAdsViewClosures?(itemIdex % self._imageUrls.count, false)
     }
     
     //MARK:---------- 轮循 更新 item
-    func updateCollection()  {
+    private func updateCollection()  {
         if _time > 0 {
-            _sendTime = NSTimer.LCD_scheduledTimerWithTimeInterval(self._time, closure: {
-                
-                //滚动到某一个 item
-                if self._adsType == .Default_H {
-                    let indexPath = NSIndexPath(forRow: self.itemIdex, inSection: 0)
-                    
-                    if self.itemIdex == self._imaCount/2 {
-                        self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
-                    }else{
-                        self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.Left, animated: true)
-                    }
-                    self.changePageValue()
-                    
-                    self.itemIdex += 1
-                    if self.itemIdex > self._imaCount - 1{
-                        self.itemIdex = self._imaCount/2
-                    }
-                }
-                if self._adsType == .Half_H {
-                    let indexPath = NSIndexPath(forRow: self.itemIdex, inSection: 0)
-                    if self.itemIdex == self._imaCount/2 {
-                        self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.Left, animated: false)
-                    }else{
-                        self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.Left, animated: true)
-                    }
-                    self.changePageValue()
-                    
-                    self.itemIdex += 1
-                    if self.itemIdex > self._imaCount - 1{
-                        self.itemIdex = self._imaCount/2
-                    }
-                }
-                
-                
-                }, repeats: true)
-            
-            
+            _sendTime = Timer.scheduledTimer(timeInterval: self._time, target: self, selector:#selector(self.timerClosure), userInfo: nil, repeats: true)
+            RunLoop.current.add(_sendTime, forMode: .commonModes)
         }
-        
+    }
+    func timerClosure() {
+        //滚动到某一个 item
+        if self._adsType == .Default_H {
+            let indexPath = IndexPath(row: self.itemIdex, section: 0)
+            
+            if self.itemIdex == self._imaCount/2 {
+                self.collectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.left, animated: false)
+            }else{
+                self.collectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.left, animated: true)
+            }
+            self.changePageValue()
+            
+            self.itemIdex += 1
+            if self.itemIdex > self._imaCount - 1{
+                self.itemIdex = self._imaCount/2
+            }
+        }
+        if self._adsType == .Half_H {
+            let indexPath = IndexPath(row: self.itemIdex, section: 0)
+            if self.itemIdex == self._imaCount/2 {
+                self.collectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.left, animated: false)
+            }else{
+                self.collectionView.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.left, animated: true)
+            }
+            self.changePageValue()
+            
+            self.itemIdex += 1
+            if self.itemIdex > self._imaCount - 1{
+                self.itemIdex = self._imaCount/2
+            }
+        }
     }
     
     //MARK:---------- UICollectionViewDelegate
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return _imaCount
     }
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("LCDAdsColleCell", forIndexPath: indexPath) as! LCDAdsColleCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LCDAdsColleCell", for: indexPath) as! LCDAdsColleCell
         
         switch _adsType {
         case .Default_H,.Half_H:
-            cell.model(_imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
+            cell.model(name: _imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
         default:
-            cell.model(_imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
+            cell.model(name: _imageUrls[indexPath.item % _imageUrls.count], isUrlImage:_isUrlImage)
         }
-        cell.imageView.contentMode = UIViewContentMode.ScaleAspectFill
+        cell.imageView.contentMode = .scaleAspectFill
         return cell
     }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        _LCDAdsViewClosures?(itemIdex:indexPath.item % _imageUrls.count, isSelect:true)
+        _LCDAdsViewClosures?(indexPath.item % _imageUrls.count, true)
     }
     //开始拖曳
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if (_adsType == .Default_H || _adsType == .Half_H) && _sendTime != nil {
             _sendTime.invalidate()
             _sendTime = nil
@@ -242,19 +239,19 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         
     }
     //结束拖曳
-    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if (_adsType == .Default_H || _adsType == .Half_H) && _imageUrls.count > 1 && _sendTime == nil {
             self.updateCollection()
         }
         
     }
     //惯性滑动结束
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if _adsType == .Default_H {
             // 将collectionView在控制器view的中心点转化成collectionView上的坐标
-            let pInView = self.convertPoint(self.collectionView.center, toView: self.collectionView)
+            let pInView = self.convert(self.collectionView.center, to: self.collectionView)
             // 获取这一点的indexPath
-            let indexPathNow = self.collectionView.indexPathForItemAtPoint(pInView)
+            let indexPathNow = self.collectionView.indexPathForItem(at: pInView)
             // 赋值给记录当前坐标的变量
             self.itemIdex = (indexPathNow?.item)!
             
@@ -264,7 +261,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         }
         if _adsType == .Half_H {
             // 获取当前显示的cell的下标
-            let lastIndexPath = self.collectionView.indexPathsForVisibleItems().first
+            let lastIndexPath = self.collectionView.indexPathsForVisibleItems.first
             print(lastIndexPath?.item)
             self.itemIdex = (lastIndexPath?.item)!
             // 更新数据
@@ -276,16 +273,16 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
     }
     //MARK:---------- UICollectionViewDelegateFlowLayout
     //布局确定每个Item 的大小
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return _itemSize
     }
     //布局确定每个section内的Item距离section四周的间距 UIEdgeInsets
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         return UIEdgeInsetsMake(0, 0, 0, 0);
     }
     //返回每个section内上下两个Item之间的间距
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if _adsType == .Half_H {
             return frame.size.width - (_itemSize.width * 2)
         }
@@ -315,7 +312,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         return 0;
     }
     //返回每个section内左右两个Item之间的间距
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         if _adsType == .Half_H {
             return 0
         }
@@ -345,7 +342,7 @@ class LCDAdsView: UIView,UICollectionViewDelegate,UICollectionViewDataSource,UIC
         return 0;
     }
     //MARK:----------- 核心动画
-    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
     }
     
@@ -384,17 +381,17 @@ extension LCDAdsView {
      * time 时间间隔
      * itemSize cell 大小
      */
-    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: NSTimeInterval = 5.0, itemSize:CGSize = CGSizeMake(0, 0), pageAlignment:UIPageControl.PageControlAlignmentType = .Center) -> LCDAdsView {
+    class func show(view:UIView ,frame: CGRect, adsType: LCDAdsViewType, imageUrls: [String],isUrlImage:Bool = true , time: TimeInterval = 5.0, itemSize:CGSize = CGSize(width: 0, height: 0), pageAlignment:UIPageControl.PageControlAlignmentType = .Center) -> LCDAdsView {
         for subView in view.subviews {
             if let adsView = subView as? LCDAdsView {
                 adsView.frame = frame
                 switch adsType {
                 case .Default_H:
-                    adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
+                    adsView._itemSize = CGSize(width:frame.size.width, height:frame.size.height)
                 default:
                     adsView._itemSize = itemSize
-                    if itemSize == CGSizeMake(0, 0) {
-                        adsView._itemSize = CGSizeMake(frame.size.width/2, frame.size.height/2)
+                    if itemSize == CGSize(width:0, height:0) {
+                        adsView._itemSize = CGSize(width:frame.size.width/2, height:frame.size.height/2)
                     }
                     
                 }
@@ -408,11 +405,11 @@ extension LCDAdsView {
         view.addSubview(adsView)
         switch adsType {
         case .Default_H:
-            adsView._itemSize = CGSizeMake(frame.size.width, frame.size.height)
+            adsView._itemSize = CGSize(width:frame.size.width, height:frame.size.height)
         default:
             adsView._itemSize = itemSize
-            if itemSize == CGSizeMake(0, 0) {
-                adsView._itemSize = CGSizeMake(frame.size.width/2, frame.size.height/2)
+            if itemSize == CGSize(width:0, height:0) {
+                adsView._itemSize = CGSize(width:frame.size.width/2, height:frame.size.height/2)
             }
         }
         adsView.pageControlAlignment = pageAlignment

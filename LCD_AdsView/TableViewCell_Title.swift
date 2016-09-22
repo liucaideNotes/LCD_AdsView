@@ -9,10 +9,10 @@
 import UIKit
 
 class TableViewCell_Title: UITableViewCell {
-
-    class func dequeueReusable(tableView:UITableView, indexPath:NSIndexPath) -> TableViewCell_Title {
-        let cell = tableView.dequeueReusableCellWithIdentifier("TableViewCell_Title", forIndexPath: indexPath) as! TableViewCell_Title
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+    
+    class func dequeueReusable(tableView:UITableView, indexPath:IndexPath) -> TableViewCell_Title {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell_Title", for: indexPath) as! TableViewCell_Title
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -28,11 +28,11 @@ class TableViewCell_Title: UITableViewCell {
         super.awakeFromNib()
         
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
 }

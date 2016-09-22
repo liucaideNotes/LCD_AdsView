@@ -9,12 +9,12 @@
 import UIKit
 import SDWebImage
 class LCDAdsColleCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var imageView: UIImageView!
     
     func model(name:String, isUrlImage:Bool) {
         if isUrlImage {
-            imageView.sd_setImageWithURL(NSURL(string: name), placeholderImage: UIImage(named: "placeholderImage"))
+            imageView.sd_setImage(with: URL(string: name), placeholderImage: UIImage(named: "placeholderImage"))
         }else{
             imageView.image = UIImage(named: name)
         }
@@ -26,5 +26,5 @@ class LCDAdsColleCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
 }

@@ -10,20 +10,18 @@ import Foundation
 import UIKit
 
 
-
-
 //MARK:---------- NSTimer
 public typealias TimerExcuteClosure = @convention(block)()->()
-extension NSTimer{
-    public class func LCD_scheduledTimerWithTimeInterval(time:NSTimeInterval, closure:TimerExcuteClosure, repeats yesOrNo: Bool) -> NSTimer{
-        let lcdtime = self.scheduledTimerWithTimeInterval(time, target: self, selector: #selector(NSTimer.excuteTimerClosure(_:)), userInfo: unsafeBitCast(closure, AnyObject.self), repeats: yesOrNo)
-        NSRunLoop.currentRunLoop().addTimer(lcdtime, forMode: NSRunLoopCommonModes)
+extension Timer{
+    public class func LCD_scheduledTimerWithTimeInterval(time:TimeInterval, closure:TimerExcuteClosure, repeats yesOrNo: Bool) -> Timer{
+        let lcdtime = self.scheduledTimer(timeInterval: time, target: self, selector:#selector(Timer.excuteTimerClosure), userInfo: unsafeBitCast(closure, to: AnyObject.self), repeats: yesOrNo)
+        RunLoop.current.add(lcdtime, forMode: .commonModes)
         return lcdtime
         
     }
-    class func excuteTimerClosure(timer: NSTimer)
+    class func excuteTimerClosure(timer: Timer)
     {
-        let closure = unsafeBitCast(timer.userInfo, TimerExcuteClosure.self)
+        let closure = unsafeBitCast(timer.userInfo, to: TimerExcuteClosure.self)
         closure()
     }
 }
@@ -48,7 +46,7 @@ extension UIPageControl {
     //设置分页圆点的位置
     func alignment(type:PageControlAlignmentType, pageCount:Int, sizeW:CGFloat){
         //小圆点个数
-        let page_w: CGFloat = self.sizeForNumberOfPages(pageCount).width + 20
+        let page_w: CGFloat = self.size(forNumberOfPages: pageCount).width + 20
         switch type {
         case .Left:
             self.frame.size.width = page_w
