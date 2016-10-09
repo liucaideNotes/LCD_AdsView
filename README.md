@@ -3,7 +3,7 @@
 
 ![image description](ads.gif)
 
-`
+```
 /**
 * 需要必要的第三方库 SDWebImage 的支持
 * 必要的默认图片修改 LCD_AdsView.placeholderImage = ""
@@ -40,4 +40,4 @@ cell.titleLab.text = "title_\(itemIdex)"
 cell.contentView.sendSubview(toBack: adsView)//将轮播放在底层
 
 return cell
-`
+```
