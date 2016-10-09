@@ -80,8 +80,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, adsType: .default_H, pageAlignment:.Right)
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .Default_H, imageUrls: images1, pageAlignment:.Right)
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -93,9 +93,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return cell!
         case 1:
             let cell = TableViewCell_Title.dequeueReusable(tableView: tableView, indexPath:indexPath as IndexPath)
-            let adsView = LCD_AdsView.show(view: cell.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, time: Double(indexPath.section), adsType: .default_H)
+            let adsView = LCDAdsView.show(view: cell.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .Default_H, imageUrls: images1, time: Double(indexPath.section))
             cell.titleLab.text = "title_\(_itemIdex)"
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -120,8 +120,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, time: Double(indexPath.section),adsType: .half_H, itemSize:CGSize(width:UIScreen.main.bounds.size.width/2 - 2, height:cell_H))
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .Half_H, imageUrls: images1,time: Double(indexPath.section), itemSize:CGSize(width:UIScreen.main.bounds.size.width/2 - 2, height:cell_H))
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -138,8 +138,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, adsType: .imageBrowse_H,itemSize:CGSize(width:(cell_H-5)/2, height:(cell_H-5)/2))
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .ImageBrowse_H, imageUrls: images1,itemSize:CGSize(width:(cell_H-5)/2, height:(cell_H-5)/2))
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -156,9 +156,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H)
-                , imageUrls: images1, adsType: .imageBrowse_V)
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H)
+                , adsType: .ImageBrowse_V, imageUrls: images1)
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -175,8 +175,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: [], adsType: .imageBrowse_V,itemSize:CGSize(width:(cell_H-5)/2, height:(cell_H-5)/2))
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .ImageBrowse_V, imageUrls: [],itemSize:CGSize(width:(cell_H-5)/2, height:(cell_H-5)/2))
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
@@ -193,8 +193,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellID_null)
             }
-            let adsView = LCD_AdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, adsType: .default_H)
-            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+            let adsView = LCDAdsView.show(view: cell!.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), adsType: .Default_H, imageUrls: images1)
+            adsView._LCDAdsViewClosures = { (itemIdex, isSelect) in
                 if isSelect {
                     let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
                     let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
