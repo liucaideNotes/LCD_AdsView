@@ -19,25 +19,25 @@
 * 使用只需要执行 LCD_AdsView.show()
 */
 
-let cell = TableViewCell_Title.dequeueReusable(tableView: tableView, indexPath:indexPath as IndexPath)
-let adsView = LCD_AdsView.show(view: cell.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, time: Double(indexPath.section), adsType: .default_H)
-cell.titleLab.text = "title_\(_itemIdex)"
-adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
-if isSelect {
-let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
-let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
-})
-aler.addAction(one)
-self.present(aler, animated: true, completion: nil)
-}else{
-//可以在这里对自定义分页圆点或其他空间赋值
-self._itemIdex = itemIdex
+ let cell = TableViewCell_Title.dequeueReusable(tableView: tableView, indexPath:indexPath as IndexPath)
+            let adsView = LCD_AdsView.show(view: cell.contentView, frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:cell_H), imageUrls: images1, time: Double(indexPath.section), adsType: .default_H)
+            cell.titleLab.text = "title_\(_itemIdex)"
+            adsView.LCD_AdsViewClosures = { (itemIdex, isSelect) in
+                if isSelect {
+                    let aler = UIAlertController(title: "点击了第\(itemIdex)张图片", message: nil, preferredStyle: .alert)
+                    let one = UIAlertAction.init(title: "确定", style: .default, handler: { (UIAlertAction) in
+                    })
+                    aler.addAction(one)
+                    self.present(aler, animated: true, completion: nil)
+                }else{
+                    //可以在这里对自定义分页圆点或其他空间赋值
+                    self._itemIdex = itemIdex
 //                    let dic:[String:Any] = ["2":123,"3":"456"]
 //                    cell.titleLab.text = dic["1"]! as? String
-cell.titleLab.text = "title_\(itemIdex)"
-}
-}
-cell.contentView.sendSubview(toBack: adsView)//将轮播放在底层
-
-return cell
+                    cell.titleLab.text = "title_\(itemIdex)"
+                }
+            }
+            cell.contentView.sendSubview(toBack: adsView)//将轮播放在底层
+            
+            return cell
 ```
